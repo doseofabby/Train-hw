@@ -13,42 +13,27 @@ var database = firebase.database();
 
 $(document).ready(function () {
 
+    // var now = moment();
     // submit btn
     $("#submit").on("click", function (event) {
         event.preventDefault();
 
-
+        // You did not made variable that grabs input value
+        // first you needed to grab input value
         var trainName = $("#trainName").val().trim();
         var destination = $("#destination").val().trim();
-
-        var time = moment($("#time").val().trim(), "hh:mm").subtract(1, "years").format("X");
-
+        var time = $("#time").val().trim();
         var frequency = $("#frequency").val().trim();
+        
 
-        //current time
-        var currentTime = moment();
-        console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
-
-        // console.log(trainName);
-        // console.log(destination);
-        // console.log(firstTime);
-        // console.log(frequency);
-        // console.log(currentTime);
-
-
-
-        //gathers together all our new train info
-        var newTrain = {
-
-            train: trainName,
-            trainGoing: destination,
-            trainComing: time,
-            everyXMin: frequency
-        };
-
-
-        //uploads newTrain to firebase
-        database.ref().push(newTrain);
+        database.ref().child('trains').push({ // push the variables to the database in a child named 'trains'
+            // and then using the input value, push it as data in the database. (nameindatabase: inputvaluevariablename)
+            trainName: trainName,
+            destination: destination,
+            time: time,
+            frequency: frequency,
+            // currentTime: now,
+        })
 
         $("#trainName").val("");
         $("#destination").val("");
@@ -59,14 +44,14 @@ $(document).ready(function () {
 
     });
 
-    database.ref().on("child_added", function (childSnapshot, prevChildKey) {
+    database.ref().on("child_added", function (snapshot,childSnapshot, prevChildKey) {
 
         console.log(childSnapshot.val());
 
-        var trainName = childSnapshot.val().train;
-        var destination = childSnapshot.val().trainGoing;
-        var time = childSnapshot.val().trainComing;
-        var frequency = childSnapshot.val().everyXMin;
+        var trainName = childSnapshot.val().trainName;
+        var destination = childSnapshot.val().destination;
+        var time = childSnapshot.val().time;
+        var frequency = childSnapshot.val().frequency;
 
         console.log(trainName);
         console.log(destination);
@@ -74,7 +59,7 @@ $(document).ready(function () {
         console.log(frequency);
 
 
-        var trainTime = moment.unix(firstTime).format("hh:mm");
+        var trainTime = moment.unix(time).format("hh:mm");
         // idk what this does really 
         var difference = moment().diff(moment(trainTime), "minutes");
 
@@ -89,11 +74,11 @@ $(document).ready(function () {
         //adding new train to table 
 
         newDiv = $("#trainTable").append("<tr>");
-        newDiv.append("<td id='name'>" + name + "</td>");
+        newDiv.append("<td id='name'>" + trainName + "</td>");
         newDiv.append("<td id='destination'>" + destination + "</td>");
         newDiv.append("<td id='frequency'>" + frequency + "</td>");
-        newDiv.append("<td id='arrival'>" + arrival + "</td>");
-        newDiv.append("<td id='minutes'>" + minutes + "</td>");
+        newDiv.append("<td id='arrival'>" + nextArrival + "</td>");
+        newDiv.append("<td id='minutes'>" + minUntil + "</td>");
 
 
     });
