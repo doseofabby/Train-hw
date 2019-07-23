@@ -16,11 +16,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-    <!-- firebase link 1: apps -->
-    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script> <!-- firebase link 1:
+        apps -->
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script> <!-- NOW IT SHOULD WORK IT LOOKS DIFFERENT THAN YOURSidk why though Do you see the quotation mark?yeah-->
 
     <!-- firebase link 2: database -->
     <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
+
     <link href="assets/css/style.css" rel="stylesheet">
     <script src="assets/javascript/app.js"></script>
 
@@ -35,7 +38,7 @@
         <div class="card-header">
             Current Train Schedule
         </div>
-        <table class="table table-hover" id="employee-table">
+        <table class="table table-hover" id="trainTable">
             <thead>
                 <tr>
                     <th scope="col">Train Name</th>
@@ -72,19 +75,19 @@
             <div class="form-group row font-weight-bold ml-3 mr-3">
                 <label for="role-input" class="col-12 col-form-label">Destination</label>
                 <div class="col-12">
-                    <input class="form-control" type="Destination" id="destination">
+                    <input class="form-control" type="destination" id="destination">
                 </div>
             </div>
             <div class="form-group row font-weight-bold ml-3 mr-3">
                 <label for="startdate-input" class="col-12 col-form-label">First Train Time</label>
                 <div class="col-12">
-                    <input class="form-control" type="Time" id="time">
+                    <input class="form-control" type="time" id="time">
                 </div>
             </div>
             <div class="form-group row font-weight-bold ml-3 mr-3">
                 <label for="monthlyrate-input" class="col-12 col-form-label">Frequency (min)</label>
                 <div class="col-12">
-                    <input class="form-control" type="Frequency" id="frequency">
+                    <input class="form-control" type="frequency" id="frequency">
                 </div>
             </div>
             <div class="form-group row justify-content-end">
