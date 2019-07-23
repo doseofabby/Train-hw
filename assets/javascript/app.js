@@ -17,14 +17,16 @@ $(document).ready(function () {
     // submit btn
     $("#submit").on("click", function (event) {
         event.preventDefault();
-
+        debugger;
         // You did not made variable that grabs input value
         // first you needed to grab input value
         var trainName = $("#trainName").val().trim();
-        var destination = $("#destination").val().trim();
+        var destination = $("#dest").val().trim();
         var time = $("#time").val().trim();
-        var frequency = $("#frequency").val().trim();
-        
+        var frequency = $("#freq").val().trim();
+
+        $("#trainTable tbody").empty();
+
 
         database.ref().child('trains').push({ // push the variables to the database in a child named 'trains'
             // and then using the input value, push it as data in the database. (nameindatabase: inputvaluevariablename)
@@ -36,49 +38,53 @@ $(document).ready(function () {
         })
 
         $("#trainName").val("");
-        $("#destination").val("");
+        $("#dest").val("");
         $("#time").val("");
-        $("#frequency").val("");
+        $("#freq").val("");
 
         return false;
 
     });
 
-    database.ref().on("child_added", function (snapshot,childSnapshot, prevChildKey) {
+    database.ref("/trains").on("child_added", function (childSnapshot) {
 
-        console.log(childSnapshot.val());
+        console.log(childSnapshot);
 
         var trainName = childSnapshot.val().trainName;
         var destination = childSnapshot.val().destination;
         var time = childSnapshot.val().time;
         var frequency = childSnapshot.val().frequency;
 
-        console.log(trainName);
-        console.log(destination);
-        console.log(time);
-        console.log(frequency);
+        // time clock
+        var firstTrainConverted = moment(firstTrain, "hh:mm").subtract("1, years");
+        // the time difference between current time and the first train
+        var difference = currentTime.diff(moment(firstTrainConverted), "minutes");
+        var remainder = difference % frequency;
+        var minUntilTrain = frequency - remainder;
+        var nextTrain = moment()
+            .add(minUntilTrain, "minutes")
+            .format("hh:mm a");
 
-
-        var trainTime = moment.unix(time).format("hh:mm");
-        // idk what this does really 
-        var difference = moment().diff(moment(trainTime), "minutes");
-
-        var trainRemain = difference % frequency;
-
-        //minutes till the next arrival
-        var minUntil = frequency - trainRemain;
-
-        //next arrival time
-        var nextArrival = moment().add(minUntil, "minutes").format('hh:mm');
+        var newTrain = {
+            name: trainName,
+            destination: destination,
+            time: time,
+            frequency: frequency,
+            min: minUntil,
+            next: nextTrain
+        };
 
         //adding new train to table 
 
-        newDiv = $("#trainTable").append("<tr>");
-        newDiv.append("<td id='name'>" + trainName + "</td>");
-        newDiv.append("<td id='destination'>" + destination + "</td>");
-        newDiv.append("<td id='frequency'>" + frequency + "</td>");
-        newDiv.append("<td id='arrival'>" + nextArrival + "</td>");
-        newDiv.append("<td id='minutes'>" + minUntil + "</td>");
+        var tableRow = $("<tr>");
+
+        tableRow.append("<td class='name'>" + trainName + "</td>");
+        tableRow.append("<td class='destination'>" + destination + "</td>");
+        tableRow.append("<td class='frequency'>" + frequency + "</td>");
+        tableRow.append("<td class='time'>" + nextArrival + "</td>");
+        tableRow.append("<td class='minutes'>" + minUntil + "</td>");
+
+        newDiv = $("#trainTable").append(tableRow);
 
 
     });
