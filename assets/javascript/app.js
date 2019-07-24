@@ -22,7 +22,7 @@ $(document).ready(function () {
         // first you needed to grab input value
         var trainName = $("#trainName").val().trim();
         var destination = $("#dest").val().trim();
-        var time = $("#time").val().trim();
+        var time = moment($("#time").val().trim(), "HH:mm").format("X");
         var frequency = $("#freq").val().trim();
 
         $("#trainTable tbody").empty();
@@ -55,24 +55,21 @@ $(document).ready(function () {
         var time = childSnapshot.val().time;
         var frequency = childSnapshot.val().frequency;
 
-        // time clock
-        var firstTrainConverted = moment(firstTrain, "hh:mm").subtract("1, years");
-        // the time difference between current time and the first train
-        var difference = currentTime.diff(moment(firstTrainConverted), "minutes");
-        var remainder = difference % frequency;
-        var minUntilTrain = frequency - remainder;
-        var nextTrain = moment()
-            .add(minUntilTrain, "minutes")
-            .format("hh:mm a");
 
-        var newTrain = {
-            name: trainName,
-            destination: destination,
-            time: time,
-            frequency: frequency,
-            min: minUntil,
-            next: nextTrain
-        };
+
+
+        var trainTime = moment.unix(time);
+        // idk what this does really 
+        var difference = moment().diff(moment(trainTime, "HH:mm"), "minutes");
+        console.log(trainTime);
+        console.log(difference);
+        var trainRemain = difference % parseInt(frequency);
+        console.log(trainRemain);
+        //minutes till the next arrival
+        var minUntil = parseInt(frequency) - trainRemain;
+
+        //next arrival time
+        var nextArrival = moment().add(minUntil, "minutes").format('hh:mm A');
 
         //adding new train to table 
 
@@ -84,7 +81,7 @@ $(document).ready(function () {
         tableRow.append("<td class='time'>" + nextArrival + "</td>");
         tableRow.append("<td class='minutes'>" + minUntil + "</td>");
 
-        newDiv = $("#trainTable").append(tableRow);
+        newDiv = $("#trainTable tbody").append(tableRow);
 
 
     });
